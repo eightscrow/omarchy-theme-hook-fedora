@@ -3,29 +3,44 @@
 
 ![Preview](assets/preview.png)
 
-# Omarchy Theme Hook
-   
-[![Themed Apps](https://img.shields.io/badge/themed_apps-15-blue?style=for-the-badge&labelColor=0C0D11&color=A5CAB8)](https://github.com/imbypass/omarchy-theme-hook/tree/main/theme-set.d)
-[![GitHub Issues](https://img.shields.io/github/issues/imbypass/omarchy-theme-hook?style=for-the-badge&labelColor=0C0D11&color=EB7A73)](https://github.com/imbypass/omarchy-theme-hook/issues)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/imbypass/omarchy-theme-hook?style=for-the-badge&labelColor=0C0D11&color=8ECD84)](https://github.com/imbypass/omarchy-theme-hook/commits/main/)
-[![GitHub Stars](https://img.shields.io/github/stars/imbypass/omarchy-theme-hook?style=for-the-badge&labelColor=0C0D11&color=EFBE71)](https://github.com/imbypass/omarchy-theme-hook/stargazers)
+# Omarchy Theme Hook — Fedora Edition
+
+[![Themed Apps](https://img.shields.io/badge/themed_apps-15-blue?style=for-the-badge&labelColor=0C0D11&color=A5CAB8)](https://github.com/eightscrow/omarchy-theme-hook-fedora/tree/main/theme-set.d)
+[![GitHub Issues](https://img.shields.io/github/issues/eightscrow/omarchy-theme-hook-fedora?style=for-the-badge&labelColor=0C0D11&color=EB7A73)](https://github.com/eightscrow/omarchy-theme-hook-fedora/issues)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/eightscrow/omarchy-theme-hook-fedora?style=for-the-badge&labelColor=0C0D11&color=8ECD84)](https://github.com/eightscrow/omarchy-theme-hook-fedora/commits/main/)
 
 **A lightweight, clean solution to extending your Omarchy theme to other apps.**
+
+> This is a fork of [imbypass/omarchy-theme-hook](https://github.com/imbypass/omarchy-theme-hook) by [@imbypass](https://github.com/imbypass).  
+> Full credit for the original concept, architecture, and hooklets goes to the original author.  
+> This fork adapts the installer to work on **Fedora-based Omarchy installations** without requiring an Arch Linux package manager.
 
 </div>
 
 ## Overview
-The Omarchy Theme Hook is a lightweight, clean solution to extending your Omarchy theme to other apps. It will check your Omarchy theme for the existence of any extended theme files and will install them automatically for you when a theme is applied. If a theme is applied that contains extended theme files, they will be copied to their proper folders. If the theme does *not* contain any extended theme files, a new set of each will be generated dynamically using the theme's Alacritty config and copied to their proper folders.
+The Omarchy Theme Hook is a lightweight, clean solution to extending your Omarchy theme to other apps. It will check your Omarchy theme for the existence of any extended theme files and will install them automatically for you when a theme is applied. If a theme is applied that contains extended theme files, they will be copied to their proper folders. If the theme does *not* contain any extended theme files, a new set of each will be generated dynamically using the theme's color config and copied to their proper folders.
+
+## What is different in this fork?
+The upstream project targets Arch Linux and uses `pacman` to install the required `adw-gtk-theme` dependency. This fork replaces that with a distro-aware installer:
+
+1. **Fedora / RPM-based**: installs `adw-gtk3-theme` via `dnf`
+2. **Debian / Ubuntu-based**: installs `adw-gtk3` via `apt-get`
+3. **Arch-based**: falls back to the original `pacman` path
+4. **Universal fallback**: downloads the latest `adw-gtk3` release tarball from GitHub and installs it to `~/.local/share/themes/` — no root access needed
+
+The installer no longer downloads itself from the internet during installation; it uses the files from the cloned repository directly.
 
 ## Installing
-You can install the theme hook by running the following command:
-```
-curl -fsSL https://imbypass.github.io/omarchy-theme-hook/install.sh | bash
+Clone this repository and run the installer:
+```bash
+git clone https://github.com/eightscrow/omarchy-theme-hook-fedora.git /tmp/omarchy-theme-hook-fedora
+bash /tmp/omarchy-theme-hook-fedora/install.sh
+rm -rf /tmp/omarchy-theme-hook-fedora
 ```
 
 ## Updating
-You can update the theme hook by running the following command, or by re-running the installation script:
-```
+Once installed, update via:
+```bash
 thctl update
 ```
 
@@ -38,7 +53,7 @@ You can access it via the terminal by running `thctl`.
 - Cursor
 - Discord
 - Firefox
-- GTK (requires `adw-gtk-theme` from the AUR)
+- GTK (requires `adw-gtk3` — installer handles this automatically)
 - QT6
 - Spotify
 - Steam
@@ -51,9 +66,8 @@ You can access it via the terminal by running `thctl`.
 - Zen Browser (experimental - requires manual enabling of legacy userchrome styling)
 
 ## Uninstalling
-You can remove the theme hook by running the following command:
-```
-curl -fsSL https://imbypass.github.io/omarchy-theme-hook/uninstall.sh | bash
+```bash
+thctl uninstall
 ```
 
 ## FAQ
@@ -63,8 +77,8 @@ curl -fsSL https://imbypass.github.io/omarchy-theme-hook/uninstall.sh | bash
 2. You may need to manually set the theme to "Omarchy" one time for each app that supports theming.
 
 #### My Firefox/Zen Browser isn't theming!
--  Firefox and Zen Browser may require manual enabling of legacy userchrome styling.
--  To do this, open the browser, go to `about:config`, search for `toolkit.legacyUserProfileCustomizations.stylesheets`, and set it to `true`.
+- Firefox and Zen Browser may require manual enabling of legacy userchrome styling.
+- To do this, open the browser, go to `about:config`, search for `toolkit.legacyUserProfileCustomizations.stylesheets`, and set it to `true`.
 
 #### My Discord isn't theming!
 1. Make sure you are using a third-party Discord client, like Vesktop or Equibop.
@@ -73,25 +87,24 @@ curl -fsSL https://imbypass.github.io/omarchy-theme-hook/uninstall.sh | bash
 
 #### My Spotify isn't theming!
 1. Make sure that you *properly* installed Spicetify, including any permission edits that may need to be made for Linux systems.
-2. See a [[note for Linux users]](https://spicetify.app/docs/advanced-usage/installation#note-for-linux-users).
+2. See a [note for Linux users](https://spicetify.app/docs/advanced-usage/installation#note-for-linux-users).
 3. Apply your desired theme in Omarchy.
 
 #### My Spotify stopped theming!
-A Spotify client update may have caused Spicetify to stop working. You can fix this either by running `spicetify restore backup apply` or by reinstalling Spotify and Spicetify, and running `spicetify backup apply`.
+A Spotify client update may have caused Spicetify to stop working. You can fix this by running `spicetify restore backup apply` or by reinstalling Spotify and Spicetify, and running `spicetify backup apply`.
 
 #### I get a "colors.toml not found" error!
 Omarchy 3.3+ requires themes to include `colors.toml`. Update your theme to a version compatible with Omarchy 3.3+, or add a valid `colors.toml` file to the theme directory.
 
 #### What if I encounter issues?
-If you encounter any issues, please open an issue on the GitHub repository.
+If you encounter any issues with this fork, please open an issue at [eightscrow/omarchy-theme-hook-fedora](https://github.com/eightscrow/omarchy-theme-hook-fedora/issues).  
+For issues unrelated to the Fedora/installer changes, consider also checking the [upstream issue tracker](https://github.com/imbypass/omarchy-theme-hook/issues).
 
-#### What theme is shown in the showcase?
-Everpuccin.
-https://github.com/imbypass/omarchy-everpuccin-theme
-
-#### Will you share your waybar configuration?
-It's on GitHub.
-https://github.com/imbypass/omarchy-waybar-bepi
+## Credits
+This fork is based on [imbypass/omarchy-theme-hook](https://github.com/imbypass/omarchy-theme-hook).  
+All original work, including the hook architecture, hooklet scripts, and `thctl` controller, is the work of [@imbypass](https://github.com/imbypass).  
+This fork contributes only the cross-distro installer compatibility layer.
 
 ## Contributing
-I actively encourage everyone to contribute a theme for their favorite application. If you have a theme for an application, an upgrade to an existing script, or even just feature ideas, please open a pull or a feature request on the GitHub repository. I try my best to review and merge them quickly. As a general rule of thumb, try to keep any templates submitted limited to a single script file.
+Contributions are welcome. If you have improvements to the Fedora compatibility layer or additional hooklets, please open a pull request at [eightscrow/omarchy-theme-hook-fedora](https://github.com/eightscrow/omarchy-theme-hook-fedora).  
+For application-specific hooklet contributions, consider contributing upstream to [imbypass/omarchy-theme-hook](https://github.com/imbypass/omarchy-theme-hook) as well.

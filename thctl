@@ -181,12 +181,27 @@ th_run() {
     omarchy-hook "theme-set"
 }
 
+# Git clone URL of this fork.
+REPO_URL="https://github.com/eightscrow/omarchy-theme-hook-fedora"
+
 th_install() {
-    curl -fsSL https://imbypass.github.io/omarchy-theme-hook/install.sh | bash
+    local tmpdir
+    tmpdir=$(mktemp -d)
+    echo "Cloning $REPO_URL..."
+    git clone "$REPO_URL" "$tmpdir/omarchy-theme-hook" > /dev/null 2>&1 || \
+        { echo -e "\e[31m[ERROR]\e[0m Failed to clone $REPO_URL. Update REPO_URL in thctl."; rm -rf "$tmpdir"; exit 1; }
+    bash "$tmpdir/omarchy-theme-hook/install.sh"
+    rm -rf "$tmpdir"
 }
 
 th_uninstall() {
-    curl -fsSL https://imbypass.github.io/omarchy-theme-hook/uninstall.sh | bash
+    local tmpdir
+    tmpdir=$(mktemp -d)
+    echo "Cloning $REPO_URL..."
+    git clone "$REPO_URL" "$tmpdir/omarchy-theme-hook" > /dev/null 2>&1 || \
+        { echo -e "\e[31m[ERROR]\e[0m Failed to clone $REPO_URL. Update REPO_URL in thctl."; rm -rf "$tmpdir"; exit 1; }
+    bash "$tmpdir/omarchy-theme-hook/uninstall.sh"
+    rm -rf "$tmpdir"
 }
 
 th_help() {
