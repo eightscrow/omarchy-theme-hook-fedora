@@ -14,7 +14,7 @@ rm -rf $HOME/.config/omarchy/hooks/theme-set
 echo "Attempting to unapply theme hook.."
 
 # Remove Steam theme
-if command -v python >/dev/null 2>&1; then
+if command -v python >/dev/null 2>&1 && [[ -d $HOME/.local/share/steam-adwaita ]]; then
     cd $HOME/.local/share/steam-adwaita && ./install.py --uninstall > /dev/null 2>&1
 fi
 
