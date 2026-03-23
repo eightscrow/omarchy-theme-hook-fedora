@@ -39,7 +39,7 @@ rm -rf /tmp/omarchy-theme-hook-fedora
 ```
 
 ## Updating
-Once installed, update via:
+You can update the theme hook by running the following command, or by re-running the installation script:
 ```bash
 thctl update
 ```
