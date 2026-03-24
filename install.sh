@@ -10,6 +10,50 @@ adw_gtk3_present() {
     { [[ -d "/usr/share/themes/adw-gtk3" ]] && [[ -d "/usr/share/themes/adw-gtk3-dark" ]]; }
 }
 
+qt6ct_present() {
+    command -v qt6ct >/dev/null 2>&1
+}
+
+install_qt6ct() {
+    if qt6ct_present; then
+        return 0
+    fi
+
+    gum style --border normal --border-foreground 6 --padding "1 2" \
+        '"qt6ct" is required to theme Qt6 applications such as qBittorrent.'
+
+    if command -v pacman &>/dev/null; then
+        if gum confirm 'Would you like to install "qt6ct" via pacman?'; then
+            sudo pacman -S --needed qt6ct
+        fi
+    elif command -v dnf &>/dev/null; then
+        if gum confirm 'Would you like to install "qt6ct" via dnf?'; then
+            sudo dnf install -y qt6ct
+        fi
+    elif command -v apt-get &>/dev/null; then
+        if gum confirm 'Would you like to install "qt6ct" via apt?'; then
+            sudo apt-get install -y qt6ct
+        fi
+    fi
+
+    if ! qt6ct_present; then
+        echo -e "\e[33m[WARNING]\e[0m qt6ct is not installed. Qt6 apps will be skipped until it is available."
+    fi
+}
+
+bootstrap_qt6ct() {
+    mkdir -p "$HOME/.config/environment.d"
+    mkdir -p "$HOME/.config/qt6ct/colors"
+
+    if [[ ! -f "$HOME/.config/environment.d/99-qt6ct.conf" ]]; then
+        cat > "$HOME/.config/environment.d/99-qt6ct.conf" << 'EOF'
+QT_QPA_PLATFORMTHEME=qt6ct
+EOF
+    elif ! grep -q '^QT_QPA_PLATFORMTHEME=qt6ct$' "$HOME/.config/environment.d/99-qt6ct.conf"; then
+        printf '\nQT_QPA_PLATFORMTHEME=qt6ct\n' >> "$HOME/.config/environment.d/99-qt6ct.conf"
+    fi
+}
+
 # Install prerequisites
 if ! adw_gtk3_present; then
     gum style --border normal --border-foreground 6 --padding "1 2" \
@@ -48,6 +92,9 @@ if ! adw_gtk3_present; then
         exit 1
     fi
 fi
+
+install_qt6ct
+bootstrap_qt6ct
 
 # Ensure GTK config dirs and stub CSS files exist (required by 10-gtk.sh on first install)
 mkdir -p "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"

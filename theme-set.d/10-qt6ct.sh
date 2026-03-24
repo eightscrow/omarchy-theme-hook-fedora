@@ -1,6 +1,9 @@
 #!/bin/bash
 
 new_qt_file="$HOME/.config/omarchy/current/theme/qt6ct.conf"
+qt6ct_config_dir="$HOME/.config/qt6ct"
+qt6ct_config_file="$qt6ct_config_dir/qt6ct.conf"
+qt6ct_color_file="$qt6ct_config_dir/colors/omarchy.conf"
 
 if ! command -v qt6ct >/dev/null 2>&1; then
     skipped "Qt6ct"
@@ -32,8 +35,39 @@ inactive_colors=#ff${base04}, #ff${base01}, #ff${base01}, #ff${base05}, #ff${bas
 EOF
 fi
 
-mkdir -p "$HOME/.config/qt6ct/colors"
-cp -p -f "$new_qt_file" "$HOME/.config/qt6ct/colors/omarchy.conf"
+mkdir -p "$qt6ct_config_dir/colors"
+cp -p -f "$new_qt_file" "$qt6ct_color_file"
+
+if [ ! -f "$qt6ct_config_file" ]; then
+cat > "$qt6ct_config_file" << EOF
+[Appearance]
+color_scheme_path=$qt6ct_color_file
+custom_palette=true
+icon_theme=Adwaita
+standard_dialogs=default
+style=Fusion
+EOF
+else
+    if grep -q '^color_scheme_path=' "$qt6ct_config_file"; then
+        sed -i "s|^color_scheme_path=.*|color_scheme_path=$qt6ct_color_file|" "$qt6ct_config_file"
+    else
+        if grep -q '^\[Appearance\]' "$qt6ct_config_file"; then
+            sed -i "/^\[Appearance\]/a color_scheme_path=$qt6ct_color_file" "$qt6ct_config_file"
+        else
+            printf '[Appearance]\ncolor_scheme_path=%s\n' "$qt6ct_color_file" >> "$qt6ct_config_file"
+        fi
+    fi
+
+    if grep -q '^custom_palette=' "$qt6ct_config_file"; then
+        sed -i 's/^custom_palette=.*/custom_palette=true/' "$qt6ct_config_file"
+    else
+        if grep -q '^\[Appearance\]' "$qt6ct_config_file"; then
+            sed -i '/^\[Appearance\]/a custom_palette=true' "$qt6ct_config_file"
+        else
+            printf '[Appearance]\ncustom_palette=true\n' >> "$qt6ct_config_file"
+        fi
+    fi
+fi
 
 success "Qt6 theme updated!"
 exit 0

@@ -23,12 +23,13 @@ The Omarchy Theme Hook is a lightweight, clean solution to extending your Omarch
 ## What is different in this fork?
 The upstream project targets Arch Linux and uses `pacman` to install the required `adw-gtk-theme` dependency. This fork replaces that with a distro-aware installer:
 
-1. **Fedora / RPM-based**: installs `adw-gtk3-theme` via `dnf`
-2. **Debian / Ubuntu-based**: installs `adw-gtk3` via `apt-get`
-3. **Arch-based**: falls back to the original `pacman` path
+1. **Fedora / RPM-based**: installs `adw-gtk3-theme` and `qt6ct` via `dnf`
+2. **Debian / Ubuntu-based**: installs `adw-gtk3` and `qt6ct` via `apt-get`
+3. **Arch-based**: falls back to the original `pacman` path for GTK and installs `qt6ct`
 4. **Universal fallback**: downloads the latest `adw-gtk3` release tarball from GitHub and installs it to `~/.local/share/themes/` — no root access needed
 
 The installer no longer downloads itself from the internet during installation; it uses the files from the cloned repository directly.
+It also bootstraps Qt6 theming by creating a `qt6ct` environment override and a default `qt6ct` configuration that points Qt6 apps at the generated Omarchy color scheme.
 
 ## Installing
 Clone this repository and run the installer:
@@ -37,6 +38,10 @@ git clone https://github.com/eightscrow/omarchy-theme-hook-fedora.git /tmp/omarc
 bash /tmp/omarchy-theme-hook-fedora/install.sh
 rm -rf /tmp/omarchy-theme-hook-fedora
 ```
+
+> [!WARNING]
+> Qt6 applications such as qBittorrent may require a new login or a full reboot after install or update.
+> The installer writes `QT_QPA_PLATFORMTHEME=qt6ct`, but your current desktop session may not pick up that environment change until the next session starts.
 
 ## Updating
 You can update the theme hook by running the following command, or by re-running the installation script:
@@ -54,7 +59,7 @@ You can access it via the terminal by running `thctl`.
 - Discord
 - Firefox
 - GTK (requires `adw-gtk3` — installer handles this automatically)
-- QT6
+- QT6 (via `qt6ct`, including apps such as qBittorrent)
 - Spotify
 - Steam
 - Superfile
@@ -75,6 +80,12 @@ thctl uninstall
 #### I installed the hook, but none of my apps are theming!
 1. The theme hook will generate and install themes, but cannot apply all of them.
 2. You may need to manually set the theme to "Omarchy" one time for each app that supports theming.
+3. Qt6 applications may require a new login or reboot after install so `QT_QPA_PLATFORMTHEME=qt6ct` is present in the session.
+
+#### qBittorrent still does not match the theme after install/update!
+1. Make sure `qt6ct` was installed successfully.
+2. Fully close qBittorrent and start it again as a new process.
+3. If it still does not change, log out and back in or reboot so the Qt environment variables are loaded into your desktop session.
 
 #### My Firefox/Zen Browser isn't theming!
 - Firefox and Zen Browser may require manual enabling of legacy userchrome styling.
