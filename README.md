@@ -39,8 +39,8 @@ bash /tmp/omarchy-theme-hook-fedora/install.sh
 rm -rf /tmp/omarchy-theme-hook-fedora
 ```
 
-> [!WARNING]
-> Qt6 applications such as qBittorrent may require a new login or a full reboot after install or update.
+
+> Qt6 applications may require a new login or a full reboot after install or update.
 > The installer writes `QT_QPA_PLATFORMTHEME=qt6ct`, but your current desktop session may not pick up that environment change until the next session starts.
 
 ## Updating
