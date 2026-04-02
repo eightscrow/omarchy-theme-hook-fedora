@@ -14,6 +14,24 @@ qt6ct_present() {
     command -v qt6ct >/dev/null 2>&1
 }
 
+xdg_portal_gtk_present() {
+    # The portal backend binary is often not in PATH (e.g. /usr/libexec),
+    # so detect via package manager first, then known install paths.
+    if command -v pacman >/dev/null 2>&1; then
+        pacman -Q xdg-desktop-portal-gtk >/dev/null 2>&1 && return 0
+    elif command -v dpkg >/dev/null 2>&1; then
+        dpkg -s xdg-desktop-portal-gtk >/dev/null 2>&1 && return 0
+    elif command -v rpm >/dev/null 2>&1; then
+        rpm -q xdg-desktop-portal-gtk >/dev/null 2>&1 && return 0
+    fi
+
+    [[ -x /usr/lib/xdg-desktop-portal-gtk ]] && return 0
+    [[ -x /usr/libexec/xdg-desktop-portal-gtk ]] && return 0
+    [[ -x /usr/lib64/xdg-desktop-portal-gtk ]] && return 0
+
+    return 1
+}
+
 install_qt6ct() {
     if qt6ct_present; then
         return 0
@@ -51,6 +69,37 @@ QT_QPA_PLATFORMTHEME=qt6ct
 EOF
     elif ! grep -q '^QT_QPA_PLATFORMTHEME=qt6ct$' "$HOME/.config/environment.d/99-qt6ct.conf"; then
         printf '\nQT_QPA_PLATFORMTHEME=qt6ct\n' >> "$HOME/.config/environment.d/99-qt6ct.conf"
+    fi
+}
+
+install_xdg_portal_gtk() {
+    if xdg_portal_gtk_present; then
+        return 0
+    fi
+
+    gum style --border normal --border-foreground 6 --padding "1 2" \
+        '"xdg-desktop-portal-gtk" is recommended for consistent GTK file dialogs and portal integration.'
+
+    if command -v pacman &>/dev/null; then
+        if gum confirm 'Would you like to install "xdg-desktop-portal-gtk" via pacman?'; then
+            sudo pacman -S --needed xdg-desktop-portal-gtk
+        fi
+    elif command -v dnf &>/dev/null; then
+        if gum confirm 'Would you like to install "xdg-desktop-portal-gtk" via dnf?'; then
+            sudo dnf install -y xdg-desktop-portal-gtk
+        fi
+    elif command -v apt-get &>/dev/null; then
+        if gum confirm 'Would you like to install "xdg-desktop-portal-gtk" via apt?'; then
+            sudo apt-get install -y xdg-desktop-portal-gtk
+        fi
+    elif command -v zypper &>/dev/null; then
+        if gum confirm 'Would you like to install "xdg-desktop-portal-gtk" via zypper?'; then
+            sudo zypper --non-interactive install xdg-desktop-portal-gtk
+        fi
+    fi
+
+    if ! xdg_portal_gtk_present; then
+        echo -e "\e[33m[WARNING]\e[0m xdg-desktop-portal-gtk is not installed. Some GTK dialogs may not follow theme settings."
     fi
 }
 
@@ -95,11 +144,22 @@ fi
 
 install_qt6ct
 bootstrap_qt6ct
+install_xdg_portal_gtk
 
-# Ensure GTK config dirs and stub CSS files exist (required by 10-gtk.sh on first install)
+# Ensure GTK config dirs and stub files exist (required by 10-gtk.sh on first install)
 mkdir -p "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"
 [[ -f "$HOME/.config/gtk-3.0/gtk.css" ]] || touch "$HOME/.config/gtk-3.0/gtk.css"
 [[ -f "$HOME/.config/gtk-4.0/gtk.css" ]] || touch "$HOME/.config/gtk-4.0/gtk.css"
+[[ -f "$HOME/.config/gtk-3.0/settings.ini" ]] || cat > "$HOME/.config/gtk-3.0/settings.ini" << 'EOF'
+[Settings]
+gtk-theme-name=adw-gtk3-dark
+gtk-application-prefer-dark-theme=1
+EOF
+[[ -f "$HOME/.config/gtk-4.0/settings.ini" ]] || cat > "$HOME/.config/gtk-4.0/settings.ini" << 'EOF'
+[Settings]
+gtk-theme-name=adw-gtk3-dark
+gtk-application-prefer-dark-theme=1
+EOF
 
 # Ensure target directories exist
 mkdir -p "$HOME/.local/share/omarchy/bin"

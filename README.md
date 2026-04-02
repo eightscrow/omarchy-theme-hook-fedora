@@ -26,10 +26,12 @@ The upstream project targets Arch Linux and uses `pacman` to install the require
 1. **Fedora / RPM-based**: installs `adw-gtk3-theme` and `qt6ct` via `dnf`
 2. **Debian / Ubuntu-based**: installs `adw-gtk3` and `qt6ct` via `apt-get`
 3. **Arch-based**: falls back to the original `pacman` path for GTK and installs `qt6ct`
-4. **Universal fallback**: downloads the latest `adw-gtk3` release tarball from GitHub and installs it to `~/.local/share/themes/` — no root access needed
+4. **openSUSE-based**: installs `xdg-desktop-portal-gtk` via `zypper` when available
+5. **Universal fallback**: downloads the latest `adw-gtk3` release tarball from GitHub and installs it to `~/.local/share/themes/` — no root access needed
 
 The installer no longer downloads itself from the internet during installation; it uses the files from the cloned repository directly.
 It also bootstraps Qt6 theming by creating a `qt6ct` environment override and a default `qt6ct` configuration that points Qt6 apps at the generated Omarchy color scheme.
+For GTK integration, it now also ensures `xdg-desktop-portal-gtk` is present when possible and writes `~/.config/gtk-3.0/settings.ini` plus `~/.config/gtk-4.0/settings.ini` so native file pickers follow dark/light mode reliably.
 
 ## Installing
 Clone this repository and run the installer:
@@ -58,7 +60,7 @@ You can access it via the terminal by running `thctl`.
 - Cursor
 - Discord
 - Firefox
-- GTK (requires `adw-gtk3` — installer handles this automatically)
+- GTK (requires `adw-gtk3`; installer also configures `settings.ini` for GTK3/GTK4 and attempts to install `xdg-desktop-portal-gtk`)
 - QT6 (via `qt6ct`, including apps such as qBittorrent)
 - Spotify
 - Steam

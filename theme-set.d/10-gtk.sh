@@ -6,6 +6,8 @@ gtk3_dir="$HOME/.config/gtk-3.0"
 gtk4_dir="$HOME/.config/gtk-4.0"
 gtk3_file="$gtk3_dir/gtk.css"
 gtk4_file="$gtk4_dir/gtk.css"
+gtk3_settings_file="$gtk3_dir/settings.ini"
+gtk4_settings_file="$gtk4_dir/settings.ini"
 
 create_dynamic_theme() {
 cat > "$output_file" << EOF
@@ -202,10 +204,34 @@ else
 fi
 
 if [ -f "$light_file" ]; then
+    cat > "$gtk3_settings_file" << EOF
+[Settings]
+gtk-theme-name=adw-gtk3
+gtk-application-prefer-dark-theme=0
+EOF
+
+    cat > "$gtk4_settings_file" << EOF
+[Settings]
+gtk-theme-name=adw-gtk3
+gtk-application-prefer-dark-theme=0
+EOF
+
     gsettings set org.gnome.desktop.interface color-scheme "prefer-light"
     gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-tmp
     gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3
 else
+    cat > "$gtk3_settings_file" << EOF
+[Settings]
+gtk-theme-name=adw-gtk3-dark
+gtk-application-prefer-dark-theme=1
+EOF
+
+    cat > "$gtk4_settings_file" << EOF
+[Settings]
+gtk-theme-name=adw-gtk3-dark
+gtk-application-prefer-dark-theme=1
+EOF
+
     gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
     gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-tmp-dark
     gsettings set org.gnome.desktop.interface gtk-theme adw-gtk3-dark
