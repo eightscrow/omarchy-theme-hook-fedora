@@ -3,7 +3,7 @@
 
 ![Preview](assets/preview.png)
 
-# Omarchy Theme Hook — Fedora Edition
+# Omarchy Theme Hook universal
 
 [![Themed Apps](https://img.shields.io/badge/themed_apps-15-blue?style=for-the-badge&labelColor=0C0D11&color=A5CAB8)](https://github.com/eightscrow/omarchy-theme-hook-fedora/tree/main/theme-set.d)
 [![GitHub Issues](https://img.shields.io/github/issues/eightscrow/omarchy-theme-hook-fedora?style=for-the-badge&labelColor=0C0D11&color=EB7A73)](https://github.com/eightscrow/omarchy-theme-hook-fedora/issues)
