@@ -62,6 +62,7 @@ You can access it via the terminal by running `thctl`.
 - Firefox
 - GTK (requires `adw-gtk3`; installer also configures `settings.ini` for GTK3/GTK4 and attempts to install `xdg-desktop-portal-gtk`)
 - QT6 (via `qt6ct` + `kvantum`, including apps such as qBittorrent)
+- Kvantum
 - Spotify
 - Steam
 - Superfile
