@@ -23,14 +23,14 @@ The Omarchy Theme Hook is a lightweight, clean solution to extending your Omarch
 ## What is different in this fork?
 The upstream project targets Arch Linux and uses `pacman` to install the required `adw-gtk-theme` dependency. This fork replaces that with a distro-aware installer:
 
-1. **Fedora / RPM-based**: installs `adw-gtk3-theme` and `qt6ct` via `dnf`
-2. **Debian / Ubuntu-based**: installs `adw-gtk3` and `qt6ct` via `apt-get`
-3. **Arch-based**: falls back to the original `pacman` path for GTK and installs `qt6ct`
+1. **Fedora / RPM-based**: installs `adw-gtk3-theme`, `qt6ct`, and `kvantum` via `dnf`
+2. **Debian / Ubuntu-based**: installs `adw-gtk3`, `qt6ct`, and `kvantum` via `apt-get`
+3. **Arch-based**: falls back to the original `pacman` path for GTK and installs `qt6ct` plus `kvantum`
 4. **openSUSE-based**: installs `xdg-desktop-portal-gtk` via `zypper` when available
 5. **Universal fallback**: downloads the latest `adw-gtk3` release tarball from GitHub and installs it to `~/.local/share/themes/` — no root access needed
 
 The installer no longer downloads itself from the internet during installation; it uses the files from the cloned repository directly.
-It also bootstraps Qt6 theming by creating a `qt6ct` environment override and a default `qt6ct` configuration that points Qt6 apps at the generated Omarchy color scheme.
+It also bootstraps Qt6 theming by creating a `qt6ct` environment override and default `qt6ct` configuration files so Qt apps consistently pick up Omarchy colors. Kvantum is installed as an available style backend, but it is not globally forced.
 For GTK integration, it now also ensures `xdg-desktop-portal-gtk` is present when possible and writes `~/.config/gtk-3.0/settings.ini` plus `~/.config/gtk-4.0/settings.ini` so native file pickers follow dark/light mode reliably.
 
 ## Installing
@@ -61,7 +61,7 @@ You can access it via the terminal by running `thctl`.
 - Discord
 - Firefox
 - GTK (requires `adw-gtk3`; installer also configures `settings.ini` for GTK3/GTK4 and attempts to install `xdg-desktop-portal-gtk`)
-- QT6 (via `qt6ct`, including apps such as qBittorrent)
+- QT6 (via `qt6ct` + `kvantum`, including apps such as qBittorrent)
 - Spotify
 - Steam
 - Superfile
@@ -85,7 +85,7 @@ thctl uninstall
 3. Qt6 applications may require a new login or reboot after install so `QT_QPA_PLATFORMTHEME=qt6ct` is present in the session.
 
 #### qBittorrent still does not match the theme after install/update!
-1. Make sure `qt6ct` was installed successfully.
+1. Make sure `qt6ct` and `kvantum` were installed successfully.
 2. Fully close qBittorrent and start it again as a new process.
 3. If it still does not change, log out and back in or reboot so the Qt environment variables are loaded into your desktop session.
 

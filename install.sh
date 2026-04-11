@@ -14,6 +14,10 @@ qt6ct_present() {
     command -v qt6ct >/dev/null 2>&1
 }
 
+kvantum_present() {
+    command -v kvantummanager >/dev/null 2>&1 || command -v kvantumpreview >/dev/null 2>&1
+}
+
 xdg_portal_gtk_present() {
     # The portal backend binary is often not in PATH (e.g. /usr/libexec),
     # so detect via package manager first, then known install paths.
@@ -56,6 +60,33 @@ install_qt6ct() {
 
     if ! qt6ct_present; then
         echo -e "\e[33m[WARNING]\e[0m qt6ct is not installed. Qt6 apps will be skipped until it is available."
+    fi
+}
+
+install_kvantum() {
+    if kvantum_present; then
+        return 0
+    fi
+
+    gum style --border normal --border-foreground 6 --padding "1 2" \
+        '"Kvantum" is required when QT_STYLE_OVERRIDE=kvantum is used by your session.'
+
+    if command -v pacman &>/dev/null; then
+        if gum confirm 'Would you like to install "kvantum" via pacman?'; then
+            sudo pacman -S --needed kvantum
+        fi
+    elif command -v dnf &>/dev/null; then
+        if gum confirm 'Would you like to install "kvantum" via dnf?'; then
+            sudo dnf install -y kvantum
+        fi
+    elif command -v apt-get &>/dev/null; then
+        if gum confirm 'Would you like to install "kvantum" via apt?'; then
+            sudo apt-get install -y kvantum
+        fi
+    fi
+
+    if ! kvantum_present; then
+        echo -e "\e[33m[WARNING]\e[0m kvantum is not installed. Qt apps using QT_STYLE_OVERRIDE=kvantum may ignore qt6ct colors."
     fi
 }
 
@@ -143,6 +174,7 @@ if ! adw_gtk3_present; then
 fi
 
 install_qt6ct
+install_kvantum
 bootstrap_qt6ct
 install_xdg_portal_gtk
 
