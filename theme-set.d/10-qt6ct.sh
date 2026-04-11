@@ -69,5 +69,11 @@ else
     fi
 fi
 
+if command -v kvantummanager >/dev/null 2>&1 || command -v kvantumpreview >/dev/null 2>&1; then
+    success "Kvantum support updated!"
+else
+    echo -e "\033[0;34m[SKIPPED]\e[0m Kvantum not found. Skipping.."
+fi
+
 success "Qt6 theme updated!"
 exit 0
