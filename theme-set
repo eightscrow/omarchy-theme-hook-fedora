@@ -206,7 +206,8 @@ if [[ -d ~/.config/omarchy/hooks/theme-set.d ]]; then
             for app in "${running[@]}"; do
                 apps+="- $app"$'\n'
             done
-            notify-send "Omarchy Theme Hook" "The following apps require a restart to apply theme:\n\n$apps"
+            DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=/run/user/$(id -u)/bus}" \
+                notify-send "Omarchy Theme Hook" "The following apps require a restart to apply theme:\n\n$apps"
         fi
     fi
 fi

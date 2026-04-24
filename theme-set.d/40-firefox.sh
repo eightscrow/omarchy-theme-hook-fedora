@@ -6,7 +6,14 @@ if ! command -v firefox >/dev/null 2>&1; then
     skipped "Firefox"
 fi
 
-if [[ ! -f "$HOME/.mozilla/firefox/profiles.ini" ]]; then
+FIREFOX_DIR=""
+if [[ -d "$HOME/.mozilla/firefox" ]]; then
+    FIREFOX_DIR="$HOME/.mozilla/firefox"
+elif [[ -d "$HOME/.config/mozilla/firefox" ]]; then
+    FIREFOX_DIR="$HOME/.config/mozilla/firefox"
+fi
+
+if [[ -z "$FIREFOX_DIR" ]] || [[ ! -f "$FIREFOX_DIR/profiles.ini" ]]; then
     skipped "Firefox (no profiles.ini — launch Firefox once to create a profile, then re-apply the theme)"
 fi
 
@@ -14,9 +21,9 @@ find_default_profile() {
     awk -F= '
         /^\[Install/ { in_install=1 }
         in_install && /^Default=/ { print $2; exit }
-    ' "$HOME/.mozilla/firefox/profiles.ini"
+    ' "$FIREFOX_DIR/profiles.ini"
 }
-default_profile="$HOME/.mozilla/firefox/$(find_default_profile)"
+default_profile="$FIREFOX_DIR/$(find_default_profile)"
 
 if [[ ! -d "$default_profile" ]]; then
     skipped "Firefox (profile directory not found — launch Firefox once to create a profile, then re-apply the theme)"

@@ -36,9 +36,9 @@ For GTK integration, it now also ensures `xdg-desktop-portal-gtk` is present whe
 ## Installing
 Clone this repository and run the installer:
 ```bash
-git clone https://github.com/eightscrow/omarchy-theme-hook-fedora.git /tmp/omarchy-theme-hook-fedora
-bash /tmp/omarchy-theme-hook-fedora/install.sh
-rm -rf /tmp/omarchy-theme-hook-fedora
+git clone https://github.com/eightscrow/Omarchy-Theme-Hook-Universal.git /tmp/Omarchy-Theme-Hook-Universal
+bash /tmp/Omarchy-Theme-Hook-Universal/install.sh
+rm -rf /tmp/Omarchy-Theme-Hook-Universal
 ```
 
 
