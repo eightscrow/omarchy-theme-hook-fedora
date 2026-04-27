@@ -71,7 +71,7 @@ You can access it via the terminal by running `thctl`.
 - Waybar
 - Windsurf
 - Zed
-- Zen Browser (experimental - requires manual enabling of legacy userchrome styling)
+- Zen Browser
 
 ## Uninstalling
 ```bash
@@ -91,8 +91,9 @@ thctl uninstall
 3. If it still does not change, log out and back in or reboot so the Qt environment variables are loaded into your desktop session.
 
 #### My Firefox/Zen Browser isn't theming!
-- Firefox and Zen Browser may require manual enabling of legacy userchrome styling.
-- To do this, open the browser, go to `about:config`, search for `toolkit.legacyUserProfileCustomizations.stylesheets`, and set it to `true`.
+1. The theme hook automatically enables legacy userchrome styling by saving a `user.js` file.
+2. However, this requires a **full browser restart** (completely closing all windows and background processes) to take effect the first time.
+3. If it still doesn't work, open the browser, go to `about:config`, search for `toolkit.legacyUserProfileCustomizations.stylesheets`, and ensure it is manually set to `true`.
 
 #### My Discord isn't theming!
 1. Make sure you are using a third-party Discord client, like Vesktop or Equibop.

@@ -6,6 +6,10 @@ if ! command -v zen-browser >/dev/null 2>&1; then
     skipped "Zen Browser"
 fi
 
+if [[ ! -f "$HOME/.zen/profiles.ini" ]]; then
+    skipped "Zen Browser (no profiles.ini — launch Zen Browser once to create a profile, then re-apply the theme)"
+fi
+
 find_default_profile() {
     awk -F= '
         /^\[Install/ { in_install=1 }
@@ -14,17 +18,19 @@ find_default_profile() {
 }
 default_profile="$HOME/.zen/$(find_default_profile)"
 
-echo $default_profile
+if [[ ! -d "$default_profile" ]]; then
+    skipped "Zen Browser (profile directory not found — launch Zen Browser once to create a profile, then re-apply the theme)"
+fi
 
 enable_userchrome() {
-    local prefs_file="$default_profile/prefs.js"
+    local user_js="$default_profile/user.js"
     local pref_name="toolkit.legacyUserProfileCustomizations.stylesheets"
-    if grep -q "user_pref(\"$pref_name\"" "$prefs_file"; then
-        if grep -q "user_pref(\"$pref_name\", false)" "$prefs_file"; then
-            sed -i.bak "s/user_pref(\"$pref_name\", false);/user_pref(\"$pref_name\", true);/" "$prefs_file"
-        fi
+    local pref_line="user_pref(\"$pref_name\", true);"
+
+    if [[ -f "$user_js" ]] && grep -q "user_pref(\"$pref_name\"" "$user_js"; then
+        sed -i "s/user_pref(\"$pref_name\", false);/$pref_line/" "$user_js"
     else
-        echo "user_pref(\"$pref_name\", true);" >> "$prefs_file"
+        echo "$pref_line" >> "$user_js"
     fi
 }
 enable_userchrome
@@ -299,16 +305,6 @@ body {
 EOF
 fi
 
-if pgrep -x "zen-browser" > /dev/null; then
-    pkill -x "zen-browser" > /dev/null
-    sleep 2
-    if pgrep -x "zen-browser" > /dev/null; then
-        pkill -9 -x "zen-browser" > /dev/null
-        sleep 1
-    fi
-    zen-browser > /dev/null &
-fi
-
-require_restart "zen-browser"
+require_restart "zen-bin"
 success "Zen Browser theme updated!"
 exit 0
